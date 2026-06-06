@@ -172,7 +172,7 @@ export default function App() {
     const [hoveredProject, setHoveredProject] = useState<number | null>(null)
 
     useEffect(() => {
-        fetch('${import.meta.env.VITE_API_URL}/api/projects/')
+        fetch(`${import.meta.env.VITE_API_URL}/api/projects/`)
             .then(res => res.json())
             .then(data => setProjects(data))
             .catch(() => { })
@@ -182,7 +182,7 @@ export default function App() {
         e.preventDefault()
         setFormStatus('sending')
         try {
-            const res = await fetch('${import.meta.env.VITE_API_URL}/api/contact/', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contact/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
