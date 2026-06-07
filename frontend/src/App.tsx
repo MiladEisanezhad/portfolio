@@ -308,7 +308,7 @@ export default function App() {
                                     transition={{ delay: 0.7 }}
                                     className="text-slate-400 text-lg mb-10 max-w-md leading-relaxed"
                                 >
-                                    Building exceptional digital experiences where design meets performance.
+                                    Building exceptional digital experiences where system architecture meets high performance.
                                 </motion.p>
 
                                 <motion.div
@@ -422,10 +422,10 @@ export default function App() {
                         transition={{ duration: 0.6 }}
                     >
                         <div className="text-center mb-16">
-                            <p className="text-cyan-400 text-sm font-medium tracking-widest uppercase mb-3">Skills</p>
+                            <p className="text-cyan-400 text-sm font-medium tracking-widest uppercase mb-3">IDEAS</p>
                             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">What I Bring</h2>
                             <p className="text-slate-400 max-w-xl mx-auto">
-                                Technical expertise combined with creative vision to deliver outstanding results
+                                Bridging technical precision and creative logic to deliver outstanding digital solutions.
                             </p>
                         </div>
 
@@ -592,7 +592,7 @@ export default function App() {
                     <div className="text-center mb-8">
                         <p className="text-cyan-400 text-sm font-medium tracking-widest uppercase mb-3">About Me</p>
                         <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                            A Passionate Developer<br />Who Loves to Code
+                            Problem Solving &<br /> Modern Web Technologies
                         </h2>
                     </div>
                     <motion.div
