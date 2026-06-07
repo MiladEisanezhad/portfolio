@@ -19,11 +19,7 @@ const IconLinkedin = ({ className = 'w-4 h-4' }) => (
     </svg>
 )
 
-const IconX = ({ className = 'w-4 h-4' }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.254 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
-    </svg>
-)
+
 
 interface Project {
     id: number
@@ -153,8 +149,11 @@ function Nav() {
                     ))}
                 </div>
                 <div className="flex gap-3">
-                    {[IconGithub, IconLinkedin, IconX].map((Icon, i) => (
-                        <a key={i} href="#" className="text-slate-400 hover:text-cyan-400 transition-colors">
+                    {[
+                        { Icon: IconGithub, href: 'https://github.com/MiladEisanezhad' },
+                        { Icon: IconLinkedin, href: 'https://www.linkedin.com/in/milad-eisanezhad-bb7910414' },
+                    ].map(({ Icon, href }, i) => (
+                        <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-cyan-400 transition-colors">
                             <Icon className="w-4 h-4" />
                         </a>
                     ))}
@@ -795,9 +794,9 @@ export default function App() {
                                     >
                                         {'</>'}
                                     </div>
-                                    <span className="font-bold text-white">milad<span className="text-cyan-400">.</span>dev</span>
+                                    <span className="font-bold text-white">M<span className="text-cyan-400">.</span>E</span>
                                 </div>
-                                <p className="text-sm text-slate-500">Building the future, one line of code at a time.</p>
+                                <p className="text-sm text-slate-500">Building the future.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold text-white mb-3 text-sm">Quick Links</h4>
@@ -812,10 +811,16 @@ export default function App() {
                             <div>
                                 <h4 className="font-semibold text-white mb-3 text-sm">Connect</h4>
                                 <div className="flex gap-3">
-                                    {[IconGithub, IconLinkedin, IconX, Mail].map((Icon, i) => (
+                                    {[
+                                        { Icon: IconGithub, href: 'https://github.com/MiladEisanezhad' },
+                                        { Icon: IconLinkedin, href: 'https://www.linkedin.com/in/milad-eisanezhad-bb7910414' },
+                                        { Icon: Mail, href: 'mailto:miladeisanezhad1@gmail.com' },
+                                    ].map(({ Icon, href }, i) => (
                                         <a
                                             key={i}
-                                            href="#"
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             data-cursor-hover
                                             className="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors"
                                             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
