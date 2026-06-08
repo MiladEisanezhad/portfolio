@@ -7,7 +7,7 @@ from .serializers import ProjectSerializer, ContactMessageSerializer
 class ProjectListView(APIView):
     def get(self, request):
         projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
+        serializer = ProjectSerializer(projects, many=True, context={'request': request})
         return Response(serializer.data)
 
 class ContactView(APIView):

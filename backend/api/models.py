@@ -3,7 +3,7 @@ from django.db import models
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    image_url = models.URLField()
+    image_url = models.models.ImageField(upload_to='projects/')
     tags = models.JSONField(default=list)   # e.g. ["React", "Node.js"]
     link = models.URLField(blank=True)
     order = models.PositiveIntegerField(default=0)
