@@ -18,3 +18,4 @@ staticfiles/
 
 # Media files (اگر داری)
 media/
+.idea
