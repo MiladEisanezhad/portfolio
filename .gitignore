@@ -1,5 +1,5 @@
 # Virtual environment
-.idea
+/.idea
 .idea/
 venv/
 .env/
