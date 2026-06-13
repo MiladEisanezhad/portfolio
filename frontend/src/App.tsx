@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
@@ -166,6 +167,7 @@ function Nav() {
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
+    const navigate = useNavigate()
     const [projects, setProjects] = useState<Project[]>([])
     const [formData, setFormData] = useState({ name: '', email: '', message: '' })
     const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -510,7 +512,9 @@ export default function App() {
                                         data-cursor-hover
                                     >
                                         <div
-                                            className="h-full rounded-2xl overflow-hidden flex flex-col transition-all duration-500"
+                                            onClick={() => { console.log('clicked', project.id); navigate(`/detail/${project.id}`) }}
+                                            // onClick={() => navigate(`/detail/${project.id}`)}
+                                            className="h-full rounded-2xl overflow-hidden flex flex-col transition-all duration-500 cursor-pointer"
                                             style={{
                                                 background: 'rgba(255,255,255,0.03)',
                                                 border: hoveredProject === project.id

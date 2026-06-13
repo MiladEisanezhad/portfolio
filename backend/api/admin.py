@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, ContactMessage
+from .models import Project, ContactMessage, ProjectImage
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -10,3 +10,5 @@ class ProjectAdmin(admin.ModelAdmin):
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'sent_at']
     readonly_fields = ['sent_at']
+
+admin.site.register(ProjectImage)
