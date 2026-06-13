@@ -30,6 +30,7 @@ interface Project {
     link: string
 }
 
+
 // ─── Custom Cursor ───────────────────────────────────────────────────────────
 function CustomCursor() {
     const cursorX = useMotionValue(-100)

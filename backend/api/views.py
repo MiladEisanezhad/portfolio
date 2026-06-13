@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,7 +11,16 @@ class ProjectListView(APIView):
         serializer = ProjectSerializer(projects, many=True, context={'request': request})
         return Response(serializer.data)
 
+# این کلاس را اضافه کن
+class ProjectDetailView(APIView):
+    def get(self, request, pk):
+        project = get_object_or_404(Project, pk=pk)
+        # فرستادن context برای درست شدن URL کامل عکس‌ها
+        serializer = ProjectSerializer(project, context={'request': request})
+        return Response(serializer.data)
+
 class ContactView(APIView):
+    # همان کد قبلی تو
     def post(self, request):
         serializer = ContactMessageSerializer(data=request.data)
         if serializer.is_valid():
