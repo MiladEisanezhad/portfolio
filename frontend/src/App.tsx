@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
     Rocket, Globe, Code, Palette, Zap,
@@ -33,55 +33,55 @@ interface Project {
 
 
 // ─── Custom Cursor ───────────────────────────────────────────────────────────
-function CustomCursor() {
-    const cursorX = useMotionValue(-100)
-    const cursorY = useMotionValue(-100)
-    const springConfig = { damping: 28, stiffness: 350 }
-    const x = useSpring(cursorX, springConfig)
-    const y = useSpring(cursorY, springConfig)
-    const [hovered, setHovered] = useState(false)
+// function CustomCursor() {
+//     const cursorX = useMotionValue(-100)
+//     const cursorY = useMotionValue(-100)
+//     const springConfig = { damping: 28, stiffness: 350 }
+//     const x = useSpring(cursorX, springConfig)
+//     const y = useSpring(cursorY, springConfig)
+//     const [hovered, setHovered] = useState(false)
 
-    useEffect(() => {
-        const move = (e: MouseEvent) => {
-            cursorX.set(e.clientX - 11)
-            cursorY.set(e.clientY - 11)
-        }
-        const over = (e: MouseEvent) => {
-            const t = e.target as HTMLElement
-            setHovered(!!(t.closest('a') || t.closest('button') || t.closest('[data-cursor-hover]')))
-        }
-        window.addEventListener('mousemove', move)
-        window.addEventListener('mouseover', over)
-        return () => {
-            window.removeEventListener('mousemove', move)
-            window.removeEventListener('mouseover', over)
-        }
-    }, [])
+//     useEffect(() => {
+//         const move = (e: MouseEvent) => {
+//             cursorX.set(e.clientX - 11)
+//             cursorY.set(e.clientY - 11)
+//         }
+//         const over = (e: MouseEvent) => {
+//             const t = e.target as HTMLElement
+//             setHovered(!!(t.closest('a') || t.closest('button') || t.closest('[data-cursor-hover]')))
+//         }
+//         window.addEventListener('mousemove', move)
+//         window.addEventListener('mouseover', over)
+//         return () => {
+//             window.removeEventListener('mousemove', move)
+//             window.removeEventListener('mouseover', over)
+//         }
+//     }, [])
 
-    return (
-        <motion.div
-            style={{ x, y, position: 'fixed', top: 0, left: 0, zIndex: 9999, pointerEvents: 'none' }}
-            animate={{ scale: hovered ? 1.8 : 1 }}
-            transition={{ scale: { type: 'spring', stiffness: 300, damping: 18 } }}
-        >
-            <svg width="22" height="22" viewBox="0 0 22 22" style={{ display: 'block', overflow: 'visible' }}>
-                <defs>
-                    <radialGradient id="starGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor={hovered ? '#e879f9' : '#ffffff'} stopOpacity="1" />
-                        <stop offset="35%" stopColor={hovered ? '#a78bfa' : '#38bdf8'} stopOpacity="0.9" />
-                        <stop offset="100%" stopColor={hovered ? '#6366f1' : '#0ea5e9'} stopOpacity="0" />
-                    </radialGradient>
-                    <filter id="starBlur">
-                        <feGaussianBlur stdDeviation="0.7" />
-                    </filter>
-                </defs>
-                <circle cx="11" cy="11" r="10" fill="url(#starGrad)" filter="url(#starBlur)" opacity="0.7" />
-                <path d="M11 2 L12.5 9.5 L20 11 L12.5 12.5 L11 20 L9.5 12.5 L2 11 L9.5 9.5 Z" fill="url(#starGrad)" />
-                <circle cx="11" cy="11" r="2" fill="white" opacity="0.95" />
-            </svg>
-        </motion.div>
-    )
-}
+//     return (
+//         <motion.div
+//             style={{ x, y, position: 'fixed', top: 0, left: 0, zIndex: 9999, pointerEvents: 'none' }}
+//             animate={{ scale: hovered ? 1.8 : 1 }}
+//             transition={{ scale: { type: 'spring', stiffness: 300, damping: 18 } }}
+//         >
+//             <svg width="22" height="22" viewBox="0 0 22 22" style={{ display: 'block', overflow: 'visible' }}>
+//                 <defs>
+//                     <radialGradient id="starGrad" cx="50%" cy="50%" r="50%">
+//                         <stop offset="0%" stopColor={hovered ? '#e879f9' : '#ffffff'} stopOpacity="1" />
+//                         <stop offset="35%" stopColor={hovered ? '#a78bfa' : '#38bdf8'} stopOpacity="0.9" />
+//                         <stop offset="100%" stopColor={hovered ? '#6366f1' : '#0ea5e9'} stopOpacity="0" />
+//                     </radialGradient>
+//                     <filter id="starBlur">
+//                         <feGaussianBlur stdDeviation="0.7" />
+//                     </filter>
+//                 </defs>
+//                 <circle cx="11" cy="11" r="10" fill="url(#starGrad)" filter="url(#starBlur)" opacity="0.7" />
+//                 <path d="M11 2 L12.5 9.5 L20 11 L12.5 12.5 L11 20 L9.5 12.5 L2 11 L9.5 9.5 Z" fill="url(#starGrad)" />
+//                 <circle cx="11" cy="11" r="2" fill="white" opacity="0.95" />
+//             </svg>
+//         </motion.div>
+//     )
+// }
 
 // ─── Floating Particles ───────────────────────────────────────────────────────
 function Particles() {
@@ -217,9 +217,6 @@ export default function App() {
         <>
             {/* Custom cursor — only on non-touch devices */}
             <style>{`
-        @media (pointer: fine) {
-          * { cursor: none !important; }
-        }
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #0a0f2e; }
@@ -242,7 +239,6 @@ export default function App() {
         .orbit-ring { animation: rotate-slow 20s linear infinite; }
       `}</style>
 
-            <CustomCursor />
             <Nav />
 
             <div
@@ -845,3 +841,4 @@ export default function App() {
         </>
     )
 }
+// Export the 
