@@ -101,12 +101,14 @@ export default function ProjectDetail() {
     const [project, setProject] = useState<Project | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
+    // Gallery state: tracks which image is currently shown as main
+    const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null)
 
     useEffect(() => {
         setLoading(true)
         fetch(`${import.meta.env.VITE_API_URL}/api/projects/${id}/`)
             .then(res => { if (!res.ok) throw new Error(); return res.json() })
-            .then(data => { setProject(data); setLoading(false) })
+            .then(data => { setProject(data); setActiveImageUrl(null); setLoading(false) })
             .catch(() => { setError(true); setLoading(false) })
     }, [id])
 
@@ -218,6 +220,7 @@ export default function ProjectDetail() {
                                         transition={{ duration: 0.7, delay: 0.2 }}
                                         className="space-y-6"
                                     >
+                                        {/* Main Image */}
                                         <div
                                             className="rounded-2xl overflow-hidden relative group"
                                             style={{
@@ -225,21 +228,27 @@ export default function ProjectDetail() {
                                                 boxShadow: '0 30px 80px rgba(56,189,248,0.1)',
                                             }}
                                         >
-                                            <motion.img
-                                                src={project.image_url}
-                                                alt={project.title}
-                                                className="w-full aspect-video object-cover"
-                                                whileHover={{ scale: 1.04 }}
-                                                transition={{ duration: 0.5 }}
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-[#060b1f]/50 via-transparent to-transparent" />
+                                            <AnimatePresence mode="wait">
+                                                <motion.img
+                                                    key={activeImageUrl ?? project.image_url}
+                                                    src={activeImageUrl ?? project.image_url}
+                                                    alt={project.title}
+                                                    className="w-full aspect-video object-cover"
+                                                    initial={{ opacity: 0, scale: 1.04 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.97 }}
+                                                    transition={{ duration: 0.35 }}
+                                                    whileHover={{ scale: 1.04 }}
+                                                />
+                                            </AnimatePresence>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#060b1f]/50 via-transparent to-transparent pointer-events-none" />
                                             <motion.div
                                                 className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                                                 style={{ boxShadow: 'inset 0 0 60px rgba(56,189,248,0.08)' }}
                                             />
                                         </div>
 
-                                        {/* Gallery (extra_images) */}
+                                        {/* Gallery (extra_images) — click to swap with main */}
                                         {project.extra_images && project.extra_images.length > 0 && (
                                             <motion.div
                                                 initial={{ opacity: 0, y: 10 }}
@@ -247,19 +256,48 @@ export default function ProjectDetail() {
                                                 transition={{ delay: 0.4 }}
                                                 className="grid grid-cols-3 gap-4"
                                             >
-                                                {project.extra_images.map((img) => (
+                                                {/* The "other" thumbnail: whichever image is NOT currently main */}
+                                                {/* Show project.image_url as a thumb when it's not active */}
+                                                {activeImageUrl && activeImageUrl !== project.image_url && (
                                                     <motion.div
-                                                        key={img.id}
+                                                        key="original-thumb"
+                                                        layoutId="original-thumb"
                                                         whileHover={{ scale: 1.05 }}
-                                                        className="rounded-xl overflow-hidden border border-white/5 cursor-pointer"
+                                                        onClick={() => setActiveImageUrl(null)}
+                                                        className="rounded-xl overflow-hidden cursor-pointer"
+                                                        style={{ border: '1px solid rgba(56,189,248,0.35)' }}
                                                     >
                                                         <img
-                                                            src={img.image}
+                                                            src={project.image_url}
                                                             className="w-full h-24 object-cover"
-                                                            alt="Gallery"
+                                                            alt="Main project image"
                                                         />
                                                     </motion.div>
-                                                ))}
+                                                )}
+                                                {project.extra_images.map((img) => {
+                                                    const isActive = activeImageUrl === img.image
+                                                    return (
+                                                        <motion.div
+                                                            key={img.id}
+                                                            whileHover={{ scale: isActive ? 1 : 1.05 }}
+                                                            onClick={() => !isActive && setActiveImageUrl(img.image)}
+                                                            className="rounded-xl overflow-hidden transition-all"
+                                                            style={{
+                                                                border: isActive
+                                                                    ? '2px solid rgba(56,189,248,0.7)'
+                                                                    : '1px solid rgba(255,255,255,0.07)',
+                                                                cursor: isActive ? 'default' : 'pointer',
+                                                                opacity: isActive ? 0.5 : 1,
+                                                            }}
+                                                        >
+                                                            <img
+                                                                src={img.image}
+                                                                className="w-full h-24 object-cover"
+                                                                alt="Gallery"
+                                                            />
+                                                        </motion.div>
+                                                    )
+                                                })}
                                             </motion.div>
                                         )}
 
