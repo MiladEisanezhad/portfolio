@@ -179,6 +179,17 @@ export default function App() {
             .then(data => setProjects(data))
             .catch(() => { })
     }, [])
+    // Scroll to hash on initial load (e.g. navigating from /detail/:id → /#projects)
+    useEffect(() => {
+        const hash = window.location.hash
+        if (!hash) return
+        // Small delay lets the page render before scrolling
+        const timer = setTimeout(() => {
+            const el = document.querySelector(hash)
+            if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+        return () => clearTimeout(timer)
+    }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
