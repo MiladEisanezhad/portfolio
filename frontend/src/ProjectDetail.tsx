@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ArrowLeft, Mail, PlayCircle } from 'lucide-react'
+import { ExternalLink, ArrowLeft, Mail, PlayCircle, X, ZoomIn } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -103,14 +103,23 @@ export default function ProjectDetail() {
     const [error, setError] = useState(false)
     // Gallery state: tracks which image is currently shown as main
     const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null)
+    // Lightbox state
+    const [lightboxOpen, setLightboxOpen] = useState(false)
 
     useEffect(() => {
         setLoading(true)
         fetch(`${import.meta.env.VITE_API_URL}/api/projects/${id}/`)
             .then(res => { if (!res.ok) throw new Error(); return res.json() })
-            .then(data => { setProject(data); setActiveImageUrl(null); setLoading(false) })
+            .then(data => { setProject(data); setActiveImageUrl(null); setLightboxOpen(false); setLoading(false) })
             .catch(() => { setError(true); setLoading(false) })
     }, [id])
+
+    // Close lightbox on Escape
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightboxOpen(false) }
+        window.addEventListener('keydown', handler)
+        return () => window.removeEventListener('keydown', handler)
+    }, [])
 
     // تبدیل لینک معمولی یوتیوب به لینک Embed
     const getEmbedUrl = (url: string) => {
@@ -220,9 +229,48 @@ export default function ProjectDetail() {
                                         transition={{ duration: 0.7, delay: 0.2 }}
                                         className="space-y-6"
                                     >
+                                        {/* Lightbox */}
+                                        <AnimatePresence>
+                                            {lightboxOpen && (
+                                                <motion.div
+                                                    key="lightbox"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    transition={{ duration: 0.25 }}
+                                                    className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-10"
+                                                    style={{ background: 'rgba(6,11,31,0.92)', backdropFilter: 'blur(12px)' }}
+                                                    onClick={() => setLightboxOpen(false)}
+                                                >
+                                                    {/* Close button */}
+                                                    <button
+                                                        className="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                                                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+                                                        onClick={() => setLightboxOpen(false)}
+                                                    >
+                                                        <X className="w-5 h-5" />
+                                                    </button>
+
+                                                    {/* Image */}
+                                                    <motion.img
+                                                        src={activeImageUrl ?? project.image_url}
+                                                        alt={project.title}
+                                                        initial={{ scale: 0.88, opacity: 0 }}
+                                                        animate={{ scale: 1, opacity: 1 }}
+                                                        exit={{ scale: 0.92, opacity: 0 }}
+                                                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                                                        className="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl"
+                                                        style={{ border: '1px solid rgba(56,189,248,0.2)' }}
+                                                        onClick={e => e.stopPropagation()}
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+
                                         {/* Main Image */}
                                         <div
-                                            className="rounded-2xl overflow-hidden relative group"
+                                            className="rounded-2xl overflow-hidden relative group cursor-zoom-in"
+                                            onClick={() => setLightboxOpen(true)}
                                             style={{
                                                 border: '1px solid rgba(56,189,248,0.2)',
                                                 boxShadow: '0 30px 80px rgba(56,189,248,0.1)',
@@ -242,6 +290,15 @@ export default function ProjectDetail() {
                                                 />
                                             </AnimatePresence>
                                             <div className="absolute inset-0 bg-gradient-to-t from-[#060b1f]/50 via-transparent to-transparent pointer-events-none" />
+                                            {/* Zoom hint overlay */}
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                                <div
+                                                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm text-white font-medium"
+                                                    style={{ background: 'rgba(6,11,31,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(56,189,248,0.3)' }}
+                                                >
+                                                    <ZoomIn className="w-4 h-4 text-cyan-400" /> Click to expand
+                                                </div>
+                                            </div>
                                             <motion.div
                                                 className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                                                 style={{ boxShadow: 'inset 0 0 60px rgba(56,189,248,0.08)' }}
