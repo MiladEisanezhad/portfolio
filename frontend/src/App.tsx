@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
@@ -172,7 +172,7 @@ export default function App() {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' })
     const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
     const [hoveredProject, setHoveredProject] = useState<number | null>(null)
-
+    const location = useLocation()
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/api/projects/`)
             .then(res => res.json())
@@ -183,13 +183,31 @@ export default function App() {
     useEffect(() => {
         const hash = window.location.hash
         if (!hash) return
-        // Small delay lets the page render before scrolling
-        const timer = setTimeout(() => {
-            const el = document.querySelector(hash)
+
+        const id = hash.replace('#', '')
+
+        // Sections that contain dynamic content (projects list).
+        // For these we wait until data has loaded before scrolling.
+        const dynamicSections = ['projects']
+        const isDynamic = dynamicSections.includes(id)
+
+        // If it's a dynamic section and projects haven't loaded yet, bail out —
+        // the effect will re-run once `projects` changes (see dependency array).
+        if (isDynamic && projects.length === 0) return
+
+        // Give the DOM one frame to finish painting then scroll.
+        const timer = requestAnimationFrame(() => {
+            const el = document.getElementById(id)
             if (el) el.scrollIntoView({ behavior: 'smooth' })
-        }, 100)
-        return () => clearTimeout(timer)
-    }, [])
+        })
+
+        return () => cancelAnimationFrame(timer)
+
+        // Re-run when:
+        //   • the route/hash changes  (location)
+        //   • projects finish loading (projects.length)
+    }, [location, projects.length])
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
